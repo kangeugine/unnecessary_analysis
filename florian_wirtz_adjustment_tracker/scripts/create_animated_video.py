@@ -18,11 +18,9 @@ class WirtzAnimationCreator:
         self.fig = None
         self.ax = None
 
-        # Mobile optimization settings
+        # Square format settings
         self.mobile_width = 1080
-        self.mobile_height = 1920
-        self.plot_height_ratio = 0.6  # Upper 60% for plot
-        self.text_height_ratio = 0.4  # Lower 40% for text
+        self.mobile_height = 1080
 
         # Animation timing (in seconds) - shortened version
         self.intro_duration = 0  # Skip introduction
@@ -49,19 +47,19 @@ class WirtzAnimationCreator:
         print(self.match_data)
 
     def setup_mobile_plot(self):
-        """Setup the plot with mobile-optimized dimensions and styling"""
+        """Setup the plot with square dimensions and styling"""
         plt.style.use('dark_background')
 
-        # Calculate dimensions for mobile layout
+        # Calculate dimensions for square layout
         figsize_width = 10.8  # Scale down from 1080px
-        figsize_height = 19.2  # Scale down from 1920px
+        figsize_height = 10.8  # Scale down from 1080px (square format)
 
         self.fig, self.ax = plt.subplots(figsize=(figsize_width, figsize_height))
         self.fig.patch.set_facecolor('#0E1117')
         self.ax.set_facecolor('#0E1117')
 
-        # Adjust layout to make room for title
-        plt.subplots_adjust(top=0.93, bottom=0.15)
+        # Adjust layout
+        plt.subplots_adjust(top=0.95, bottom=0.1)
 
         # Set axis limits with y-axis being 130% of x-axis range
         all_data = pd.concat([self.baseline_data, self.match_data])
@@ -96,13 +94,6 @@ class WirtzAnimationCreator:
                           fontsize=20, fontweight='bold', color='#FFFFFF', labelpad=20)
         self.ax.set_ylabel('Goal Threat Index (GTI)',
                           fontsize=20, fontweight='bold', color='#FFFFFF', labelpad=20)
-
-        # Main title - set once and preserve
-        self.fig.suptitle('How is Wirtz Adapting to Liverpool?',
-                         fontsize=28, fontweight='bold', color='#FFFFFF', y=0.98)
-
-        # Store reference to title so we don't remove it
-        self.title_text = self.fig._suptitle
 
     def create_text_overlay(self, text, y_position=0.05, fontsize=24):
         """Create text overlay below the x-axis"""
@@ -148,9 +139,8 @@ class WirtzAnimationCreator:
         self.ax.set_ylabel('Goal Threat Index (GTI)',
                           fontsize=20, fontweight='bold', color='#FFFFFF', labelpad=20)
 
-        # Remove existing text overlays but preserve title
-        texts_to_remove = [text for text in self.fig.texts if text != self.title_text]
-        for text in texts_to_remove:
+        # Remove existing text overlays
+        for text in self.fig.texts:
             text.remove()
 
         total_frames = (self.intro_duration + self.baseline_duration +
@@ -201,9 +191,6 @@ class WirtzAnimationCreator:
                     baseline_x = self.baseline_data['CII'].values
                     baseline_y = self.baseline_data['GTI'].values
                     self.ax.plot(baseline_x, baseline_y, 'g--', linewidth=2, alpha=0.7)
-
-            text = "Leverkusen Baseline (Last 2 Seasons)\nThese points set our comparison standard"
-            self.create_text_overlay(text, fontsize=22)
 
         # Section 2: Liverpool Performance (9+ seconds)
         else:
@@ -266,12 +253,6 @@ class WirtzAnimationCreator:
                 if len(match_x) > 1:
                     self.ax.plot(match_x, match_y, 'r-', linewidth=3, alpha=0.8)
 
-                # Text overlay for current match
-                if matches_to_show <= len(self.match_data):
-                    current_match = self.match_data.iloc[min(matches_to_show - 1, len(self.match_data) - 1)]
-                    text = f"Match {matches_to_show}: vs {current_match['opponent']}\nCII: {current_match['CII']:.2f} | GTI: {current_match['GTI']:.2f}"
-                    self.create_text_overlay(text, fontsize=20)
-
             # Section 4: Finale (highlight final match)
             finale_start = (match_start_time + len(self.match_data) * self.match_duration)
             if current_time > finale_start:
@@ -287,9 +268,6 @@ class WirtzAnimationCreator:
                     self.ax.scatter(final_match['CII'], final_match['GTI'],
                                   c='red', s=250 * pulse, alpha=0.9,
                                   edgecolors='white', linewidth=3, zorder=4)
-
-                    text = f"Latest Performance: vs {final_match['opponent']}\nCII: {final_match['CII']:.2f} | GTI: {final_match['GTI']:.2f}"
-                    self.create_text_overlay(text, fontsize=22)
 
     def create_animation(self):
         """Create the full animation"""
@@ -338,8 +316,8 @@ def main():
 
     print(f"\nVideo created successfully!")
     print(f"Output: {video_path}")
-    print(f"Format: 9:16 (mobile-optimized)")
-    print(f"Ready for YouTube Shorts and Instagram Reels")
+    print(f"Format: 1:1 (square format)")
+    print(f"Ready for Instagram posts and other square video platforms")
 
 if __name__ == "__main__":
     main()

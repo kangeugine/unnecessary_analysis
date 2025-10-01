@@ -56,3 +56,8 @@ The workflow would be: create animated plots with Matplotlib → export as video
 2. Verify the folder structure exists, create if needed with user permission
 3. Place files in appropriate subfolders
 4. If new libraries are needed, ask user to install them manually before proceeding
+
+## Running python scripts
+```
+uv run python <script location relative to folder location>
+```

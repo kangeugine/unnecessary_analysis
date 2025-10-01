@@ -76,3 +76,4 @@ uv pip install moviepy
 ## Data Source
 
 All performance data is sourced from [FBref](https://fbref.com) - Florian Wirtz player statistics.
+
